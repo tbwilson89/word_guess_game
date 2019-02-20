@@ -1,0 +1,65 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: url('https://www.mtlblog.com/u/2018/11/21/49e6e237049def5606f47f353fa7f72679148a2c.jpg_1200x630.jpg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+h1 {
+  font-size: 34px;
+  font-weight: bold;
+}
+
+header {
+  width: 100%;
+  padding: 25px;
+  margin-bottom: 25px;
+  text-align: center;
+  color: #fff;
+  background: #4f4f4f;
+  border-bottom: 5px solid #2f2f2f;
+}
+
+#main-content {
+  flex: 1;
+}
+.container {
+  height: 50vh;
+  width: 960px;
+  margin: 0 auto;
+  padding: 5px;
+  text-align: center;
+  background: #efefef;
+  border: 2px solid #afafaf;
+}
+.container div {
+  padding: 25px;
+}
+.flex-section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.flex-section section {
+  width: 50%;
+  text-align: center;
+}
+#img-div {
+  max-width: 100%;
+}
+.game-info {
+  width: 100%;
+}
+
+footer {
+  padding: 25px;
+  text-align: center;
+  color: #fff;
+  background: #4f4f4f;
+  border-top: 5px solid #2f2f2f;
+}
