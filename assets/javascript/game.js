@@ -49,15 +49,23 @@ var imgDiv = document.getElementById("img-div")
 
 document.onkeyup = (event) => {
   var key = event.key.toLowerCase()
+  //Check if the key being pressed by the user is a-z and not an F key, since F5 seems to pass this test
   if(key.match(/[a-z]/i) && key.length === 1){
+    //check if game round has started or needs to be started
     if(gameObj.gameStarted){
+      //Logic for actually playing the game
+      //check if the key pressed has already been guessed or not
       if(gameObj.wrongGuesses.indexOf(key) === -1 && gameObj.progress.indexOf(key) === -1){
+        // Check if the users guess is in the current word being guessed
+        // If it is, put it in each position within progress it needs to be
         if(gameObj.currentWord.indexOf(key) !== -1){
           for(i=0;i<gameObj.currentWord.length;i++){
             if(gameObj.currentWord[i] === key){
               gameObj.progress[i] = key;
             }
           }
+          // Check if any more letters need to be guessed or if word is completed
+          // If completed, add to wins, play victory music and show image as well as adjust everything else as necessary.
           if(gameObj.progress.indexOf('_') === -1){
             console.log('You win!')
             var audio = new Audio(gameObj.musicArr[0])
@@ -68,10 +76,13 @@ document.onkeyup = (event) => {
             imgDiv.src = gameObj.imgArr[gameObj.wordArr.indexOf(gameObj.currentWord.join(''))]
             imgDiv.style.display = "block"
           }
+          // If not a correct guess, add letter to wrong guesses, reduce guesses remaining
         } else {
           console.log(`It's not in the word...`)
           gameObj.wrongGuesses.push(key)
           gameObj.guesses--
+          // Check if user is out of guesses
+          // Play losing music and adjust things as necessary to prepare for restarting the game
           if(gameObj.guesses === 0){
             var audio = new Audio(gameObj.musicArr[1])
             audio.play()
@@ -81,11 +92,14 @@ document.onkeyup = (event) => {
             imgDiv.style.display = "block"
           }
         }
+      // For when a user pushes a key they already guessed.
       } else {
         console.log(`Please make a guess that you haven't already made`)
       }
+      // Update the content of the page after all chagnes have been made based on the users guess.
       updatePage()
     } else {
+      //Logic for initial setup of the game and when starting a new round.
       gameObj.gameStarted = !gameObj.gameStarted
       gameObj.currentWord = gameObj.wordArr[Math.floor(Math.random() * gameObj.wordArr.length)].split('')
       gameObj.guesses = 12
@@ -97,6 +111,7 @@ document.onkeyup = (event) => {
       imgDiv.style.display = "none"
       updatePage()
     }
+  // For when the user doesn't push an appropriate letter key for a guess.
   } else {
     console.log('Please choose a letter. :(')
   }
