@@ -13,19 +13,18 @@ var gameObj = {
     "crash"
   ],
   imgArr: [
-    'https://i.pinimg.com/originals/a7/87/88/a78788d285a647701307d615d5d2a08b.jpg',
-    'https://i.pinimg.com/originals/d0/9c/eb/d09cebb232577543a684bee4ae350878.jpg',
-    'https://www.ssbwiki.com/images/thumb/5/57/Cloud_SSB4.png/1200px-Cloud_SSB4.png',
-    'https://vignette.wikia.nocookie.net/robotsupremacy/images/f/fe/Mega_Man_-_Version_11.png/revision/latest?cb=20190204130552',
-    'https://vignette.wikia.nocookie.net/theunitedorganizationtoonsheroes/images/6/68/Link-0.png/revision/latest?cb=20171009143548',
-    'https://kirby.nintendo.com/assets/img/intro/kirby-star2.png',
-    'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/intermediary/f/520452d2-1c61-4216-a3d6-7ba0c59ab7f7/dcsrwby-c792ce2e-47ab-4cab-a455-31075aa4039e.png',
-    'https://vignette.wikia.nocookie.net/yoshi/images/8/8d/Yoshi_SSBU.png/revision/latest?cb=20180628045711',
-    'https://images-na.ssl-images-amazon.com/images/I/61VDJIPbIfL._SY879_.jpg',
-    'https://www.clipartmax.com/png/middle/184-1844225_scorpion-clipart-mortal-kombat-ultimate-mortal-kombat-3-scorpion.png',
-    'https://www.seekpng.com/png/detail/139-1390532_crash-bandicoot-crash-bandicoot-png.png',
-    'https://www.mtlblog.com/u/2018/11/21/49e6e237049def5606f47f353fa7f72679148a2c.jpg_1200x630.jpg',
-    'https://vignette.wikia.nocookie.net/game-over-dex/images/f/f4/Super_Mario_World_%28Unl%29-0.png/revision/latest?cb=20130519202011'
+    './assets/images/mario.jpg',
+    './assets/images/sonic.jpg',
+    './assets/images/cloud.png',
+    './assets/images/megaman.png',
+    './assets/images/link.png',
+    './assets/images/kirby.png',
+    './assets/images/spyro.png',
+    './assets/images/yoshi.png',
+    './assets/images/samus.jpg',
+    './assets/images/scorpion.png',
+    './assets/images/crash.png',
+    './assets/images/gameover.png'
   ],
   musicArr: [
     './assets/sounds/mario_world_st_clear.mp3',
@@ -40,7 +39,9 @@ var gameObj = {
   progress: [],
 }
 
-var gameInfoDiv = document.getElementById('game-info')
+var mushroomImg = './assets/images/mushroom.png'
+
+var gameInfoDiv = document.getElementById('game-title')
 var wordToGuessDiv = document.getElementById("word-to-guess")
 var guessesDiv = document.getElementById("guesses")
 var lettersGuessedDiv = document.getElementById("letters-guessed")
@@ -48,20 +49,28 @@ var winsDiv = document.getElementById("wins")
 var imgDiv = document.getElementById("img-div")
 
 document.onkeyup = (event) => {
+  // Adjust to lowercase in the event of capslock or something
   var key = event.key.toLowerCase()
-  //Check if the key being pressed by the user is a-z and not an F key, since F5 seems to pass this test
-  if(key.match(/[a-z]/i) && key.length === 1){
+  // Check if the key being pressed by the user is a-z and not longer then 1 character
+  // since backspace and enter are all lettersseems to pass this test
+  if(key.match(/[a-z]$/g) && key.length === 1){
     //check if game round has started or needs to be started
     if(gameObj.gameStarted){
-      //Logic for actually playing the game
-      //check if the key pressed has already been guessed or not
+      // Logic for actually playing the game
+      // check if the key pressed has already been guessed or not
       if(gameObj.wrongGuesses.indexOf(key) === -1 && gameObj.progress.indexOf(key) === -1){
         // Check if the users guess is in the current word being guessed
         // If it is, put it in each position within progress it needs to be
         if(gameObj.currentWord.indexOf(key) !== -1){
           for(i=0;i<gameObj.currentWord.length;i++){
             if(gameObj.currentWord[i] === key){
-              gameObj.progress[i] = key;
+              // If the first letter of the word (name), capitalize it!
+              // Otherwise, simply add the lowercase letter as needed.
+              if(i===0){
+                gameObj.progress[i] = key.toUpperCase()
+              } else {
+                gameObj.progress[i] = key;
+              }
             }
           }
           // Check if any more letters need to be guessed or if word is completed
@@ -81,6 +90,7 @@ document.onkeyup = (event) => {
           console.log(`It's not in the word...`)
           gameObj.wrongGuesses.push(key)
           gameObj.guesses--
+          guessesDiv.removeChild(guessesDiv.childNodes[0])
           // Check if user is out of guesses
           // Play losing music and adjust things as necessary to prepare for restarting the game
           if(gameObj.guesses === 0){
@@ -105,10 +115,16 @@ document.onkeyup = (event) => {
       gameObj.guesses = 12
       gameObj.wrongGuesses = []
       gameObj.progress = []
+      guessesDiv.innerHTML = ''
+      for(i=0;i<gameObj.guesses;i++){
+        var newImg = document.createElement('img')
+        newImg.setAttribute('src', mushroomImg)
+        guessesDiv.appendChild(newImg)
+      }
       gameObj.currentWord.map((v, i)=>{
         gameObj.progress.push('_')
       })
-      imgDiv.style.display = "none"
+      document.getElementById('right-side').style.display = "block"
       updatePage()
     }
   // For when the user doesn't push an appropriate letter key for a guess.
@@ -116,15 +132,21 @@ document.onkeyup = (event) => {
     console.log('Please choose a letter. :(')
   }
 }
-
+// Function for updating the contents of the page.
 function updatePage(){
   if(gameObj.gameStarted){
     gameInfoDiv.innerText = "The game has started!"
+    imgDiv.style.display = "block"
+    imgDiv.src = './assets/images/questionblock.jpg'
   } else {
-    gameInfoDiv.innerText = "You win! Press any key to play again!"
+    gameInfoDiv.innerHTML = "You win!<br>Press any key to play again!"
   }
   wordToGuessDiv.innerText = gameObj.progress.join(' ')
-  guessesDiv.innerText = gameObj.guesses
+  var guessImgs = []
+  if(!gameObj.gameStarted){
+
+  }
+  // guessesDiv.innerText = gameObj.guesses
   lettersGuessedDiv.innerText = gameObj.wrongGuesses.join(' ')
   winsDiv.innerText = `Wins: ${gameObj.wins} / ${gameObj.gamesCompleted}`
 }

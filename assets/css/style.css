@@ -8,10 +8,11 @@ body {
   min-height: 100vh;
   background: url('https://www.mtlblog.com/u/2018/11/21/49e6e237049def5606f47f353fa7f72679148a2c.jpg_1200x630.jpg') no-repeat center center fixed;
   background-size: cover;
+  font-family: 'Press Start 2P', cursive, serif;
 }
 
 h1 {
-  font-size: 34px;
+  font-size: 30px;
   font-weight: bold;
 }
 
@@ -29,13 +30,17 @@ header {
   flex: 1;
 }
 .container {
-  height: 50vh;
+  height: 83vh;
   width: 960px;
   margin: 0 auto;
   padding: 5px;
   text-align: center;
   background: #efefef;
   border: 2px solid #afafaf;
+}
+#game-title {
+  height: 40px;
+  margin-top: 25px;
 }
 .container div {
   padding: 25px;
@@ -50,10 +55,26 @@ header {
   text-align: center;
 }
 #img-div {
-  max-width: 100%;
+  max-height: 900px;
+  max-width: 98%;
+  margin-top: 25px;
 }
 .game-info {
-  width: 100%;
+  min-height: 75px;
+  padding: 10px;
+  margin-top: 25px;
+}
+#word-to-guess {
+  font-size: 1.6em;
+}
+#guesses {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#guesses img {
+  height: 16.66%;
+  width: 16.66%;
 }
 
 footer {
