@@ -150,7 +150,11 @@ function updatePage(){
     imgDiv.style.display = "block"
     imgDiv.src = './assets/images/questionblock.jpg'
   } else {
-    gameInfoDiv.innerHTML = "You win!<br>Press any key to play again!"
+    if(gameObj.guesses === 0){
+      gameInfoDiv.innerHTML = "You lose...<br>Press any key to try again."
+    } else {
+      gameInfoDiv.innerHTML = "You win!<br>Press any key to play again!"
+    }
   }
   wordToGuessDiv.innerText = gameObj.progress.join(' ')
   var guessImgs = []
