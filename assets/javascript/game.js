@@ -1,3 +1,4 @@
+// All game information safely contained within this object.
 var gameObj = {
   wordArr: [
     "mario",
@@ -90,7 +91,8 @@ document.onkeyup = (event) => {
           console.log(`It's not in the word...`)
           gameObj.wrongGuesses.push(key)
           gameObj.guesses--
-          guessesDiv.removeChild(guessesDiv.childNodes[0])
+          // Remove mushrooms img elements as user guesses wrong (1 as to not remove the "Guesses Remaining" text)
+          guessesDiv.removeChild(guessesDiv.childNodes[1])
           // Check if user is out of guesses
           // Play losing music and adjust things as necessary to prepare for restarting the game
           if(gameObj.guesses === 0){
@@ -116,9 +118,18 @@ document.onkeyup = (event) => {
       gameObj.wrongGuesses = []
       gameObj.progress = []
       guessesDiv.innerHTML = ''
+      // Create and add img elements of mario mushrooms for each guess remaining.
       for(i=0;i<gameObj.guesses;i++){
         var newImg = document.createElement('img')
         newImg.setAttribute('src', mushroomImg)
+        // Add "Guesses Remaining: " to the top of the mushrooms to clarify what they are there for.
+        // Could probably just rewrite some HTML/CSS to make this work, but decided I wanted to do this instead.
+        if(i===0){
+          var paragraph = document.createElement('p')
+          paragraph.innerText = "Guesses Remaining:"
+          paragraph.style.width = "100%"
+          guessesDiv.appendChild(paragraph)
+        }
         guessesDiv.appendChild(newImg)
       }
       gameObj.currentWord.map((v, i)=>{
@@ -143,10 +154,6 @@ function updatePage(){
   }
   wordToGuessDiv.innerText = gameObj.progress.join(' ')
   var guessImgs = []
-  if(!gameObj.gameStarted){
-
-  }
-  // guessesDiv.innerText = gameObj.guesses
   lettersGuessedDiv.innerText = gameObj.wrongGuesses.join(' ')
   winsDiv.innerText = `Wins: ${gameObj.wins} / ${gameObj.gamesCompleted}`
 }

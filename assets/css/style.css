@@ -1,3 +1,8 @@
+/* Welcome to my stylesheet!
+Where I fumble around in attempts to make things look good, but honestly having no sense of design...
+So... I revert back to basics and probably leave weird remnants of given up ideas
+I probably should have used bootstrap, but I feel like this was more for the JavaScript anyways. */
+
 * {
   box-sizing: border-box;
 }
@@ -57,6 +62,7 @@ header {
 #img-div {
   max-height: 900px;
   max-width: 98%;
+  min-width: 100%;
   margin-top: 25px;
 }
 .game-info {
