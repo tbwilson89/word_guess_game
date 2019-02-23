@@ -27,10 +27,19 @@ var gameObj = {
     './assets/images/crash.png',
     './assets/images/gameover.png'
   ],
+  mushroomImg: './assets/images/mushroom.png',
   musicArr: [
     './assets/sounds/mario_world_st_clear.mp3',
     './assets/sounds/mario_snes-game_over.mp3'
   ],
+  elementArr: {
+    gameInfoDiv: document.getElementById('game-title'),
+    wordToGuessDiv: document.getElementById("word-to-guess"),
+    guessesDiv: document.getElementById("guesses"),
+    lettersGuessedDiv: document.getElementById("letters-guessed"),
+    winsDiv: document.getElementById("wins"),
+    imgDiv: document.getElementById("img-div"),
+  },
   gameStarted: false,
   wins: 0,
   gamesCompleted: 0,
@@ -38,16 +47,25 @@ var gameObj = {
   guesses: 0,
   wrongGuesses: [],
   progress: [],
+  // Function for updating the general contents of the page.
+  updatePage: ()=>{
+    if(gameObj.gameStarted){
+      gameObj.elementArr.gameInfoDiv.innerText = "The game has started!"
+      gameObj.elementArr.imgDiv.style.display = "block"
+      gameObj.elementArr.imgDiv.src = './assets/images/questionblock.jpg'
+    } else {
+      if(gameObj.guesses === 0){
+        gameObj.elementArr.gameInfoDiv.innerHTML = "You lose...<br>Press any key to try again."
+      } else {
+        gameObj.elementArr.gameInfoDiv.innerHTML = "You win!<br>Press any key to play again!"
+      }
+    }
+    gameObj.elementArr.wordToGuessDiv.innerText = gameObj.progress.join(' ')
+    var guessImgs = []
+    gameObj.elementArr.lettersGuessedDiv.innerText = gameObj.wrongGuesses.join(' ')
+    gameObj.elementArr.winsDiv.innerText = `Wins: ${gameObj.wins} / ${gameObj.gamesCompleted}`
+  }
 }
-
-var mushroomImg = './assets/images/mushroom.png'
-
-var gameInfoDiv = document.getElementById('game-title')
-var wordToGuessDiv = document.getElementById("word-to-guess")
-var guessesDiv = document.getElementById("guesses")
-var lettersGuessedDiv = document.getElementById("letters-guessed")
-var winsDiv = document.getElementById("wins")
-var imgDiv = document.getElementById("img-div")
 
 document.onkeyup = (event) => {
   // Adjust to lowercase in the event of capslock or something
@@ -83,8 +101,8 @@ document.onkeyup = (event) => {
             gameObj.wins++
             gameObj.gamesCompleted++
             gameObj.gameStarted = !gameObj.gameStarted;
-            imgDiv.src = gameObj.imgArr[gameObj.wordArr.indexOf(gameObj.currentWord.join(''))]
-            imgDiv.style.display = "block"
+            gameObj.elementArr.imgDiv.src = gameObj.imgArr[gameObj.wordArr.indexOf(gameObj.currentWord.join(''))]
+            gameObj.elementArr.imgDiv.style.display = "block"
           }
           // If not a correct guess, add letter to wrong guesses, reduce guesses remaining
         } else {
@@ -92,7 +110,7 @@ document.onkeyup = (event) => {
           gameObj.wrongGuesses.push(key)
           gameObj.guesses--
           // Remove mushrooms img elements as user guesses wrong (1 as to not remove the "Guesses Remaining" text)
-          guessesDiv.removeChild(guessesDiv.childNodes[1])
+          gameObj.elementArr.guessesDiv.removeChild(gameObj.elementArr.guessesDiv.childNodes[1])
           // Check if user is out of guesses
           // Play losing music and adjust things as necessary to prepare for restarting the game
           if(gameObj.guesses === 0){
@@ -100,8 +118,8 @@ document.onkeyup = (event) => {
             audio.play()
             gameObj.gamesCompleted++
             gameObj.gameStarted = !gameObj.gameStarted
-            imgDiv.src = gameObj.imgArr[gameObj.imgArr.length - 1]
-            imgDiv.style.display = "block"
+            gameObj.elementArr.imgDiv.src = gameObj.imgArr[gameObj.imgArr.length - 1]
+            gameObj.elementArr.imgDiv.style.display = "block"
           }
         }
       // For when a user pushes a key they already guessed.
@@ -109,7 +127,7 @@ document.onkeyup = (event) => {
         console.log(`Please make a guess that you haven't already made`)
       }
       // Update the content of the page after all chagnes have been made based on the users guess.
-      updatePage()
+      gameObj.updatePage()
     } else {
       //Logic for initial setup of the game and when starting a new round.
       gameObj.gameStarted = !gameObj.gameStarted
@@ -117,47 +135,29 @@ document.onkeyup = (event) => {
       gameObj.guesses = 12
       gameObj.wrongGuesses = []
       gameObj.progress = []
-      guessesDiv.innerHTML = ''
+      gameObj.elementArr.guessesDiv.innerHTML = ''
       // Create and add img elements of mario mushrooms for each guess remaining.
       for(i=0;i<gameObj.guesses;i++){
         var newImg = document.createElement('img')
-        newImg.setAttribute('src', mushroomImg)
+        newImg.setAttribute('src', gameObj.mushroomImg)
         // Add "Guesses Remaining: " to the top of the mushrooms to clarify what they are there for.
         // Could probably just rewrite some HTML/CSS to make this work, but decided I wanted to do this instead.
         if(i===0){
           var paragraph = document.createElement('p')
           paragraph.innerText = "Guesses Remaining:"
           paragraph.style.width = "100%"
-          guessesDiv.appendChild(paragraph)
+          gameObj.elementArr.guessesDiv.appendChild(paragraph)
         }
-        guessesDiv.appendChild(newImg)
+        gameObj.elementArr.guessesDiv.appendChild(newImg)
       }
       gameObj.currentWord.map((v, i)=>{
         gameObj.progress.push('_')
       })
       document.getElementById('right-side').style.display = "block"
-      updatePage()
+      gameObj.updatePage()
     }
   // For when the user doesn't push an appropriate letter key for a guess.
   } else {
     console.log('Please choose a letter. :(')
   }
-}
-// Function for updating the contents of the page.
-function updatePage(){
-  if(gameObj.gameStarted){
-    gameInfoDiv.innerText = "The game has started!"
-    imgDiv.style.display = "block"
-    imgDiv.src = './assets/images/questionblock.jpg'
-  } else {
-    if(gameObj.guesses === 0){
-      gameInfoDiv.innerHTML = "You lose...<br>Press any key to try again."
-    } else {
-      gameInfoDiv.innerHTML = "You win!<br>Press any key to play again!"
-    }
-  }
-  wordToGuessDiv.innerText = gameObj.progress.join(' ')
-  var guessImgs = []
-  lettersGuessedDiv.innerText = gameObj.wrongGuesses.join(' ')
-  winsDiv.innerText = `Wins: ${gameObj.wins} / ${gameObj.gamesCompleted}`
 }
